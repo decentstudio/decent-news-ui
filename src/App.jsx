@@ -2,8 +2,8 @@ import React, { Component } from 'react';
 import injectTapEventPlugin from 'react-tap-event-plugin';
 import SlackMessage from './components/SlackMessage';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
-import RaisedButton from 'material-ui/RaisedButton';
 import AppBar from 'material-ui/AppBar';
+import { OrderedSet } from 'immutable';
 
 // Needed for onTouchTap 
 // http://stackoverflow.com/a/34015469/988941 
@@ -17,36 +17,33 @@ class App extends Component {
     this.newsRetrievalWorker = new SharedWorker(`${process.env.PUBLIC_URL}/news-retrieval-worker.js`);
 
     this.state = {
-      messages: []
+      newsItems: OrderedSet()
     };
 
-    this.newsRetrievalWorker.port.onmessage = (event) => {
-      console.log(event.data);
+    this.newsRetrievalWorker.port.onmessage = this.handleNewsWorkerMessage.bind(this);
+  }
+
+  handleNewsWorkerMessage(event) {
+    const newNewsItems = event.data.filter(item => {
+      return !this.state.newsItems.map(x => x.id).includes(item.id)
+    });
+    if (newNewsItems.length > 0) {
       this.setState({
-        messages: [...this.state.messages, ...event.data]
+        newsItems: this.state.newsItems.concat(newNewsItems)
       });
-    };
-    // test http request before moving it to worker since can't console log from worker
-    // const newsUrl = 'http://localhost:8081/api/news';
-    // const httpRequest = new XMLHttpRequest();
-    // httpRequest.open('GET', newsUrl, true);
-    // httpRequest.onload = (event) => {
-    //   console.log('Ready state:', httpRequest.readyState);
-    //   console.log('Status', httpRequest.statusText);
-    //   console.log('Response text:', httpRequest.responseText);
-    // };
-    // httpRequest.send();
+    }
   }
 
   render() {
+    console.log('render called');
     return (
       <MuiThemeProvider>
         <div>
-          <AppBar 
+          <AppBar
             title="Decent News"
             showMenuIconButton={false}
           />
-          {this.state.messages.map(message => {
+          {this.state.newsItems.map(message => {
             return (
               <SlackMessage
                 key={message.id}
