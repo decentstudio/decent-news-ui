@@ -1,0 +1,13 @@
+.slack-message-container {
+  border: 1px solid black;
+  padding: 5px;
+}
+
+.slack-message-user {
+  font-weight: bold;
+  font-size: 12px;
+}
+
+.slack-message-content {
+  font-size: 14px;
+}

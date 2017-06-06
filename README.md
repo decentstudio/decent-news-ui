@@ -1,3 +1,9 @@
+# decent-news-ui
+
+Mockup for the general structure of the UI can be found [here](https://app.moqups.com/brandon.ringe@gmail.com/tenlXQf2oJ/view/page/aa9df7b72).
+
+-----------------------------------------------------------------------------------
+
 This project was bootstrapped with [Create React App](https://github.com/facebookincubator/create-react-app).
 
 Below you will find some information on how to perform common tasks.<br>
