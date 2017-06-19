@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import { OrderedSet } from 'immutable';
-import { Button } from 'semantic-ui-react';
+import './App.css';
+import { Grid } from 'semantic-ui-react';
+import CompanyMenu from './components/CompanyMenu';
 
 class App extends Component {
 
@@ -29,11 +31,22 @@ class App extends Component {
   render() {
     console.log('render called');
     return (
-        <div>
-          <Button primary>
-            Click Here
-          </Button>
+      <div>
+        <div className="site-header-container">
+          <h1>Decent News</h1>
         </div>
+        <Grid className="news-grid">
+          <Grid.Column width={4} className="left-column-container">
+            <CompanyMenu />
+          </Grid.Column>
+          <Grid.Column width={12} className="right-column-container">
+            News items for selected company
+          </Grid.Column>
+        </Grid>
+        <footer className="site-footer-container">
+          Copyright &copy; {new Date().getFullYear()} Decent Studio
+        </footer>
+      </div>
     );
   }
 }
