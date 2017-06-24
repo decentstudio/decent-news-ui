@@ -1,8 +1,14 @@
 import React, { Component } from 'react';
 import { OrderedSet } from 'immutable';
 import './App.css';
-import { Grid } from 'semantic-ui-react';
+import {
+  Grid,
+  Menu,
+  Segment,
+  Container
+} from 'semantic-ui-react';
 import CompanyMenu from './components/CompanyMenu';
+import appconfig from './appconfig';
 
 class App extends Component {
 
@@ -15,6 +21,7 @@ class App extends Component {
 
     // this.newsRetrievalWorker = new SharedWorker(`${process.env.PUBLIC_URL}/news-retrieval-worker.js`);
     // this.newsRetrievalWorker.port.onmessage = this.handleNewsWorkerMessage.bind(this);
+    this.handleCompanyClick = this.handleCompanyClick.bind(this);
   }
 
   handleNewsWorkerMessage(event) {
@@ -28,24 +35,24 @@ class App extends Component {
     }
   }
 
+  handleCompanyClick() {
+    alert('Clicked a company');
+  }
+
   render() {
     console.log('render called');
     return (
       <div>
-        <div className="site-header-container">
-          <h1>Decent News</h1>
-        </div>
-        <Grid className="news-grid">
-          <Grid.Column width={4} className="left-column-container">
-            <CompanyMenu />
-          </Grid.Column>
-          <Grid.Column width={12} className="right-column-container">
-            News items for selected company
-          </Grid.Column>
-        </Grid>
-        <footer className="site-footer-container">
-          Copyright &copy; {new Date().getFullYear()} Decent Studio
-        </footer>
+        <Menu inverted fixed="top">
+          <Menu.Item header>Decent Studio</Menu.Item>
+        </Menu>
+        <Container className="main">
+          <Menu vertical>
+            {appconfig.companies.map(company => {
+              return <Menu.Item onClick={this.handleCompanyClick}>{company.name}</Menu.Item>;
+            })}
+          </Menu>
+        </Container>
       </div>
     );
   }
