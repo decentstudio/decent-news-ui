@@ -4,10 +4,10 @@ import './App.css';
 import {
   Grid,
   Menu,
-  Segment,
   Container
 } from 'semantic-ui-react';
 import CompanyMenu from './components/CompanyMenu';
+import PlatformMenu from './components/PlatformMenu';
 import appconfig from './appconfig';
 
 class App extends Component {
@@ -16,27 +16,42 @@ class App extends Component {
     super();
 
     this.state = {
-      newsItems: OrderedSet()
+      platforms: [],
+      activePlatform: '',
+      activeCompany: '',
+      slackMessages: OrderedSet()
     };
 
     // this.newsRetrievalWorker = new SharedWorker(`${process.env.PUBLIC_URL}/news-retrieval-worker.js`);
     // this.newsRetrievalWorker.port.onmessage = this.handleNewsWorkerMessage.bind(this);
     this.handleCompanyClick = this.handleCompanyClick.bind(this);
+    this.handlePlatformClick = this.handlePlatformClick.bind(this);
   }
 
   handleNewsWorkerMessage(event) {
-    const newNewsItems = event.data.filter(item => {
-      return !this.state.newsItems.map(x => x.id).includes(item.id)
+    const newSlackMessages = event.data.filter(item => {
+      return !this.state.slackMessages.map(x => x.id).includes(item.id)
     });
-    if (newNewsItems.length > 0) {
+    if (newSlackMessages.length > 0) {
       this.setState({
-        newsItems: this.state.newsItems.concat(newNewsItems)
+        slackMessages: this.state.slackMessages.concat(newSlackMessages)
       });
     }
   }
 
-  handleCompanyClick() {
-    alert('Clicked a company');
+  handleCompanyClick(event, data) {
+    console.log('selected company:', data.name);
+    this.setState({
+      platforms: appconfig.companies.get(data.name).platforms,
+      activeCompany: data.name
+    });
+  }
+
+  handlePlatformClick(event, data) {
+    console.log('selected platform:', data.name);
+    this.setState({
+      activePlatform: data.name
+    });
   }
 
   render() {
@@ -44,14 +59,24 @@ class App extends Component {
     return (
       <div>
         <Menu inverted fixed="top">
-          <Menu.Item header>Decent Studio</Menu.Item>
+          <Menu.Item header>Decent News</Menu.Item>
         </Menu>
         <Container className="main">
-          <Menu vertical>
-            {appconfig.companies.map(company => {
-              return <Menu.Item onClick={this.handleCompanyClick}>{company.name}</Menu.Item>;
-            })}
-          </Menu>
+          <Grid>
+            <Grid.Column width={4}>
+              <CompanyMenu 
+                handleCompanyClick={this.handleCompanyClick}
+                activeCompany={this.state.activeCompany}
+              />
+            </Grid.Column>
+            <Grid.Column width={11}>
+              <PlatformMenu 
+                handlePlatformClick={this.handlePlatformClick} 
+                platforms={this.state.platforms}
+                activePlatform={this.state.activePlatform}
+              />
+            </Grid.Column>
+          </Grid>
         </Container>
       </div>
     );
