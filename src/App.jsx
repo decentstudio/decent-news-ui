@@ -22,6 +22,7 @@ class App extends Component {
       slackMessages: OrderedSet()
     };
 
+    // Uncommment when ready to handle messages
     // this.newsRetrievalWorker = new SharedWorker(`${process.env.PUBLIC_URL}/news-retrieval-worker.js`);
     // this.newsRetrievalWorker.port.onmessage = this.handleNewsWorkerMessage.bind(this);
     this.handleCompanyClick = this.handleCompanyClick.bind(this);
